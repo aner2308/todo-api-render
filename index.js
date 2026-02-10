@@ -51,9 +51,41 @@ app.post('/api/todos', (req, res) => {
     res.status(201).json(todo);
 });
 
+// UPDATE status, titel, beskrivning
+app.put('/api/todos/:id', (req, res) => {
+    const { id } = req.params; // id från URL
+    const { title, description, status } = req.body; // data från body
 
+    // Hitta todo i arrayen
+    const todo = todos.find(t => t.id == id);
+    if (!todo) {
+        return res.status(404).json({ error: "Todo hittades ej." });
+    }
 
-// UPDATE status
+    // Validerar titeln samt längd på titel
+    if (title && title.length < 3) {
+        return res.status(400).json({ error: "Titel måste vara minst 3 tecken lång." });
+    }
+
+    // Validerr beskrivningen
+    if (description && description.length > 200) {
+        return res.status(400).json({ error: "Beskrivningen får max vara 200 tecken." });
+    }
+
+    // Validerar status och att det är en giltig siffra
+    const allowedStatus = [0, 1, 2];
+    if (status !== undefined && !allowedStatus.includes(status)) {
+        return res.status(400).json({ error: "Status måste vara 0, 1 eller 2." });
+    }
+
+    // Uppdatera fälten
+    if (title) todo.title = title;
+    if (description) todo.description = description;
+    if (status !== undefined) todo.status = status;
+
+    res.json(todo);
+});
+
 
 // DELETE
 
