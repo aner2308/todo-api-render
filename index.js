@@ -12,10 +12,26 @@ app.use(bodyParser.json());
 let todos = [];
 let nextId = 1;
 
+
 // READ alla todos
 app.get('/api/todos', (req, res) => {
     res.json(todos);
 });
+
+
+// READ en enskild todo
+app.get('/api/todos/:id', (req, res) => {
+    const { id } = req.params;
+
+    // Hitta todo med rätt id
+    const todo = todos.find(t => t.id == id);
+    if (!todo) {
+        return res.status(404).json({ error: "Todo hittades ej." });
+    }
+
+    res.json(todo);
+});
+
 
 // CREATE
 app.post('/api/todos', (req, res) => {
@@ -50,6 +66,7 @@ app.post('/api/todos', (req, res) => {
     todos.push(todo);
     res.status(201).json(todo);
 });
+
 
 // UPDATE status, titel, beskrivning
 app.put('/api/todos/:id', (req, res) => {
