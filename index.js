@@ -87,6 +87,24 @@ app.put('/api/todos/:id', (req, res) => {
 });
 
 
-// DELETE
+// DELETE en todo
+app.delete('/api/todos/:id', (req, res) => {
+    const { id } = req.params;
+
+    // Kontrollerar om todo finns
+    const index = todos.findIndex(t => t.id == id);
+
+    //Om todo inte finns, skickas 404 not found
+    if (index === -1) {
+        return res.status(404).json({ error: "Todo hittades ej." });
+    }
+
+    // Tar bort todo med en splice
+    todos.splice(index, 1);
+
+    // Skickar status 204, No Content
+    res.status(204).send();
+});
+
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
